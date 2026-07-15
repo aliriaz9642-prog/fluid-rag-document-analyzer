@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insighta Flow - Document Insight Pipeline</title>
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Premium Navigation Header -->
+        <header class="app-header">
+            <div class="brand-logo">
+                <div class="logo-mark">
+                    <span class="logo-circle"></span>
+                    <span class="logo-ring"></span>
+                </div>
+                <span class="logo-text">Insighta<span class="logo-accent">Flow</span></span>
+            </div>
+            <div class="system-status">
+                <span class="status-indicator active"></span>
+                <span class="status-label">Pipeline Active (Groq API Connected)</span>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Layout -->
+        <main class="dashboard-grid">
+            <!-- Left Panel: Input controls -->
+            <section class="control-panel glass-card">
+                <div class="panel-header">
+                    <h2>📁 Analyze Document</h2>
+                    <p class="panel-subtitle">Upload a PDF or TXT document (Max 20MB)</p>
+                </div>
+
+                <form id="upload-form" class="upload-form">
+                    <!-- Drag and Drop Dropzone -->
+                    <div id="drop-zone" class="drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="upload-icon">📤</div>
+                            <p class="drop-zone-text">Drag & drop your file here or <span class="browse-link">browse</span></p>
+                            <p class="drop-zone-subtext">Supports PDF and TXT formats</p>
+                        </div>
+                        <input type="file" id="file-input" name="file" accept=".pdf,.txt" class="file-hidden-input">
+                    </div>
+
+                    <!-- Selected File Preview Badge -->
+                    <div id="file-preview-badge" class="file-preview-badge hidden">
+                        <span class="file-icon">📄</span>
+                        <div class="file-info-text">
+                            <span id="file-name-label" class="file-name">document.pdf</span>
+                            <span id="file-size-label" class="file-size">1.2 MB</span>
+                        </div>
+                        <button type="button" id="remove-file-btn" class="remove-file-btn" title="Remove file">×</button>
+                    </div>
+
+                    <!-- Dynamic Question Area -->
+                    <div class="questions-section">
+                        <div class="questions-header">
+                            <h3>❓ Document Questions</h3>
+                            <button type="button" id="add-question-btn" class="add-btn">+ Add</button>
+                        </div>
+                        <p class="section-description">These questions will be answered using relevant document chunks retrieved via TF-IDF search.</p>
+                        <div id="questions-list-container" class="questions-list">
+                            <!-- Dynamic inputs loaded here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="analyze-submit-btn" class="submit-btn disabled" disabled>
+                        <span class="btn-text">Analyze Document</span>
+                        <span class="btn-shine"></span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Panel: Output & Loader Results -->
+            <section class="results-panel glass-card">
+                <!-- Loader State (Visible during process) -->
+                <div id="pipeline-loader" class="loader-container hidden">
+                    <div class="spinner-outer">
+                        <div class="spinner-inner"></div>
+                        <div class="spinner-center">⚡</div>
+                    </div>
+                    <h3 id="loader-title">Running Pipeline...</h3>
+                    <p id="loader-subtitle">Reading binary data</p>
+                    <div class="progress-bar-container">
+                        <div id="loader-progress-fill" class="progress-bar-fill"></div>
+                    </div>
+                    <ul id="loader-steps" class="loader-steps">
+                        <!-- Step logs dynamically added here -->
+                    </ul>
+                </div>
+
+                <!-- Empty State (Default display) -->
+                <div id="results-empty-state" class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <h3>No Analysis Results Yet</h3>
+                    <p>Upload a document and click "Analyze Document" on the left panel to trigger summaries and grounded QA.</p>
+                </div>
+
+                <!-- Success Output State (Visible after API completes) -->
+                <div id="results-success-state" class="success-state hidden">
+                    <div class="results-header-info">
+                        <div class="success-banner">
+                            <span class="success-check">✓</span>
+                            <div class="success-meta">
+                                <h3 id="doc-title-result">document.pdf</h3>
+                                <p id="doc-meta-result">Processed in 7.5s using llama-3.3-70b-versatile</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Menu -->
+                    <nav class="tabs-nav">
+                        <button type="button" class="tab-btn active" data-tab="summary-tab">📝 Summary</button>
+                        <button type="button" class="tab-btn" data-tab="qa-tab">❓ Grounded Q&A</button>
+                        <button type="button" class="tab-btn" data-tab="markdown-tab">📄 Markdown</button>
+                        <button type="button" class="tab-btn" data-tab="json-tab">💻 JSON</button>
+                    </nav>
+
+                    <!-- Tabs Contents -->
+                    <div class="tab-contents-container">
+                        <!-- Tab 1: Section Summaries -->
+                        <div id="summary-tab" class="tab-pane active-pane">
+                            <div id="summaries-container" class="summaries-grid">
+                                <!-- Dynamically loaded section summary cards -->
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Q&A Results -->
+                        <div id="qa-tab" class="tab-pane">
+                            <div id="qa-container" class="qa-grid">
+                                <!-- Dynamically loaded Q&A result cards -->
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: Markdown Output -->
+                        <div id="markdown-tab" class="tab-pane">
+                            <div class="code-view-header">
+                                <span>Markdown Report</span>
+                                <button type="button" id="copy-markdown-btn" class="copy-btn">Copy Report</button>
+                            </div>
+                            <pre class="code-block"><code id="markdown-code-content"></code></pre>
+                        </div>
+
+                        <!-- Tab 4: JSON Output -->
+                        <div id="json-tab" class="tab-pane">
+                            <div class="code-view-header">
+                                <span>Structured JSON Output</span>
+                                <button type="button" id="copy-json-btn" class="copy-btn">Copy JSON</button>
+                            </div>
+                            <pre class="code-block"><code id="json-code-content"></code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast Alerts -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Glowing Fluid Blobs & Watery Waves (Human-Design Premium Touches) -->
+    <div class="blob-bg">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+    </div>
+    
+    <div class="water-waves">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+    </div>
+
+    <script src="/static/index.js"></script>
+</body>
+</html>

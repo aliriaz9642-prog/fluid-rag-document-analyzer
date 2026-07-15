@@ -1,0 +1,27 @@
+SECTION 1: OVERVIEW OF AGENTIC SYSTEM
+
+The Antigravity Coding Framework is an advanced agentic software engineering system developed by the AI research team to automate complex, multi-step programming tasks. Built on top of state-of-the-art Large Language Models, the system aims to close the gap between simple code-completion tools and autonomous developers. By leveraging iterative refinement loops, the framework is capable of planning, executing, testing, and debugging source code inside isolated sandboxes.
+
+The main target of this framework is to increase developer throughput by handling mundane refactoring tasks, scanning codebases for common vulnerabilities, and generating production-quality APIs from natural language specifications.
+
+SECTION 2: KEY CAPABILITIES
+
+The system possesses three primary capabilities that distinguish it from legacy autocompletion tools:
+
+1. Dynamic Planning: Unlike static generation engines, the framework generates a comprehensive implementation plan before making modifications to any file. This plan details the files affected, changes proposed, and the verification steps required to prove correctness.
+2. Self-Correction: When executing test suites, if a compiler or linter yields an error, the agent intercepts the stack trace, reasons about the root cause of the error, and automatically edits the code to fix the failure.
+3. Strict Security Auditing: Code execution is sandboxed, and credentials/secrets are strictly restricted to environment variable lookups. It automatically validates new imports to prevent supply chain injection attacks.
+
+SECTION 3: SECURITY CONTROLS
+
+Security is integrated into every phase of the pipeline. The system enforces strict isolation between public execution layers and sensitive local credentials. It never stores API keys or authentication tokens in version-controlled source files. When scanning dependencies, it uses an internal API to query package registries for known vulnerabilities (CVEs) before adding them to package configuration files.
+
+Furthermore, the execution environment runs on localhost or loopback interfaces during testing, entirely disabling wildcards and open socket bindings to prevent remote code execution or data extraction vectors.
+
+SECTION 4: RECOMMENDATIONS AND ACTION ITEMS
+
+To achieve maximum deployment safety, organizations should implement the following recommendations:
+- Ensure all execution nodes run behind strict firewalls and use containerized runtime environments.
+- Enable detailed diagnostic logs but filter out sensitive runtime objects, database passwords, and user-presented credentials.
+- Periodically regenerate all API keys and restrict their usage policies to the narrowest possible access scopes.
+- Require manual human review for plan approval before allowing execution on production systems.
