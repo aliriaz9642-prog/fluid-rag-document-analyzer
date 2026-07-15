@@ -187,16 +187,20 @@ With more development time, I would:
 
 ---
 
-## 📸 Screenshots and Demo
+## Screenshots
 
-### CLI Execution
-<!-- TODO: Add CLI screenshot here -->
+### Clean Project Directory Structure
+![Project Structure](screenshots/folder.png)
 
-### Generated Markdown Report
-<!-- TODO: Add Markdown output screenshot here -->
+### Interactive Web Dashboard interface
+![Web Dashboard](screenshots/Screenshot%202026-07-15%20151628.png)
 
-### Demo Video
-- [Watch the Video Demo (Placeholder link)]()
+### Analysis Results and Grounded Q&A Reports
+![Results Dashboard](screenshots/result.png)
+
+## Demo Video
+
+Watch the full walkthrough here: [Demo Video](https://drive.google.com/file/d/1UrUtE17wNBLhdCgo2s54IW7Lf0Q7RSWK/view?usp=sharing)
 
 ---
 
